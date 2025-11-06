@@ -12,7 +12,7 @@ data = []
 labels = []
 
 for dir in os.listdir(DATA_DIR):
-    for img_path in os.path.join(DATA_DIR, dir):
+    for img_path in os.listdir(os.path.join(DATA_DIR, dir)):
         if not img_path.endswith(".jpg"):
             continue
 
