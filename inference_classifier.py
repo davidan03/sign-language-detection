@@ -24,29 +24,33 @@ while True:
     y_coords = []
 
     ret, frame = capture.read()
+
+    if not ret:
+        continue
+
     H, W, C = frame.shape
     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
     results = hands.process(frame_rgb)
     if results.multi_hand_landmarks:
-        for hand in results.multi_hand_landmarks:
-            for i in range(len(hand.landmark)):
-                x = hand.landmark[i].x
-                y = hand.landmark[i].y
+        hand = results.multi_hand_landmarks[0]
+        
+        for i in range(len(hand.landmark)):
+            x = hand.landmark[i].x
+            y = hand.landmark[i].y
 
-                x_coords.append(x)
-                y_coords.append(y)
+            x_coords.append(x)
+            y_coords.append(y)
 
-                landmark_data.append(x - min(x_coords))
-                landmark_data.append(y - min(y_coords))
+            landmark_data.append(x - min(x_coords))
+            landmark_data.append(y - min(y_coords))
 
-        for hand in results.multi_hand_landmarks:
-            mp_drawing.draw_landmarks(
-                frame,
-                hand,
-                mp_hands.HAND_CONNECTIONS,
-                mp_drawing_styles.get_default_hand_landmarks_style(),
-                mp_drawing_styles.get_default_hand_connections_style())
+        mp_drawing.draw_landmarks(
+            frame,
+            hand,
+            mp_hands.HAND_CONNECTIONS,
+            mp_drawing_styles.get_default_hand_landmarks_style(),
+            mp_drawing_styles.get_default_hand_connections_style())
 
         x1 = int(min(x_coords) * W) - 10
         y1 = int(min(y_coords) * H) - 10
